@@ -4,16 +4,11 @@ import numpy as np
 import threading
 import tkinter 
 from datetime import datetime
-import matplotlib.pyplot as plt
-import matplotlib
 import math
 import socket
 import json 
 import time 
 from queue import Queue
-import continuous_threading
-
-matplotlib.use("TkAgg")
 
 class Gauge(object): 
 
