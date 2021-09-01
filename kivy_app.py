@@ -13,28 +13,26 @@ class KivyCamera(Image):
         self.event = threading.Event()
 
         self.gauge = Gauge(self.event)
-        
-    
         Clock.schedule_interval(self.result, 1.0 / fps)
     
     def result(self, dt):
-        if self.gauge.update() is True:
-            #self.gauge.makeBlur() # commenting this out program will not be able to make image gray 
-            buf1 = cv2.flip(self.gauge.img, 0)
+        
+        if self.gauge.update() is not None:
+            image = self.gauge.update()
+            buf1 = cv2.flip(image, 0)
             buf = buf1.tostring()
             image_texture = Texture.create(
                 size=(self.gauge.img.shape[1], self.gauge.img.shape[0]), colorfmt='rgb')
             image_texture.blit_buffer(buf, colorfmt='rgb', bufferfmt='ubyte')
-            # display image from the texture
-            
+            # display image from the texture            
             self.texture = image_texture
 
-    #def Start(self):
-    #    self.gauge.start()        
+        
+
 
 class CamApp(App):
     def build(self):       
-        self.pressure = KivyCamera(fps=30)
+        self.pressure = KivyCamera(fps=20)
         return self.pressure
 
 

@@ -9,11 +9,7 @@ import socket
 import json 
 import time 
 from queue import Queue
-<<<<<<< HEAD
 import continuous_threading
-
-=======
->>>>>>> 6b70c6a1486e6536d055ce6c7903be508430d82a
 
 class Gauge(object): 
 
@@ -85,48 +81,76 @@ class Gauge(object):
                     self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
                     self.frame_copy = self.frame
                     self.img = self.frame 
-                    return True
+                    final_image = self.start()
+                    if final_image is not None:
+                        return final_image
+                    else:
+                        return self.frame
                 else:
-                    return False
+                    print("no status ")
+                    return None
             else:
-                return False
+                print("couldnt open camera")
+                return None
               
 ####################################################################################
     def start(self):
-        self.makeBlur()   
+        if self.makeBlur() is not False:
+            #print("maked blur")
+            if self.makeGray() is not False:
+                #print("maked gray")
+                if self.findCircle() is not False:
+                    self.drawCircle()
+                    self.cutBackground()
+                    self.CannyEdges() 
+                    #print("found canny")
+                    if self.drawLine() is not False:
+                        self.findQuadrants()
+                        self.findAngle()
+                        self.findPressure()
+                        return self.img 
+                else:
+                    #print("no circles")
+                    return None
+            else:
+                    #print("making gray failed")
+                    return None
+        else:
+            #print("failed on blur")
+            return None
 ####################################################################################
     def makeBlur(self):
         try:
             self.blur = cv2.blur(self.img,(3,3))
-            self.makeGray() # in case of succeeded blurring call makeGray method
+            return True
         except Exception:
-            print("caught an exceptpon in make blur")
-            self.start()
+            #print("caught an exceptpon in make blur")
+            return False
 ####################################################################################
     def makeGray(self):
         try:
             self.gray_img = cv2.cvtColor(self.blur,cv2.COLOR_RGB2GRAY)
-            self.findCircle() 
+            return True
+             
         except Exception:
-            print("caught an exception in make gray")
-            pass
+            #print("caught an exception in make gray")
+            return False
 #####################################################################################            
     def findCircle(self):
-        circles = cv2.HoughCircles(self.gray_img,cv2.HOUGH_GRADIENT_ALT,dp=1.5,minDist=5,param1=300,param2=0.9,minRadius=0, maxRadius=1200)
-        if circles is not False:
+        self.circles = cv2.HoughCircles(self.gray_img,cv2.HOUGH_GRADIENT_ALT,dp=1.5,minDist=5,param1=300,param2=0.9,minRadius=0, maxRadius=1200)
+        try:
             self.circles = np.uint16(np.around(self.circles))
+            #print(self.circles)
             self.x0 = self.circles[0,0,0] 
             self.y0 = self.circles[0,0,1]  
             self.r  = self.circles[0,0,2]
-            
-            self.drawCircle() 
-        else:
-            print("couldn't find the circles")
-            self.start()
+            return True 
+        except:
+            #print("couldn't find the circles")
+            return False
 ####################################################################################
     def drawCircle(self):
         self.img = cv2.circle(self.img,(self.x0,self.y0),self.r,(0,255,0),3)
-        self.cutBackground()
 #####################################################################################    
     def cutBackground(self):
         self.masked_image = np.zeros(self.gray_img.shape[:2], dtype="uint8")#mem alloc for mask
@@ -135,11 +159,9 @@ class Gauge(object):
         r = self.circles[0,0,2]
         cv2.circle(self.masked_image , (x,y),r,255,-1) # Thickness of -1 px will fill the circle shape by the specified color.
         self.masked_image = cv2.bitwise_and(self.gray_img, self.gray_img, mask=self.masked_image) # using logical AND compare mask with image and delete everything outside the mask
-        self.CannyEdges()
 #####################################################################################        
     def CannyEdges(self):
-        self.edges = cv2.Canny(self.masked_image,self.canny_threshold1,self.canny_threshold2)
-        self.drawLine()
+        self.edges = cv2.Canny(self.masked_image,self.canny_threshold1,self.canny_threshold2)      
 #####################################################################################        
     def drawLine(self):
         lines = cv2.HoughLinesP(self.edges,1, np.pi/180.0, self.houghlines_threshold, self.minLineLength, self.maxLineGap)
@@ -148,9 +170,9 @@ class Gauge(object):
             self.x_arrow = lines[0,0,0] # 
             self.y_arrow = lines[0,0,1]
             cv2.line(self.img,(self.x0,self.y0), (self.x_arrow,self.y_arrow), (0,0,255),2)
-            self.findQuadrants()
+            return True
         else:
-            self.start()
+            return False
 ####################################################################################                        
     def findQuadrants(self):
         self.x_1_quadrant_limit = self.x0  
@@ -164,7 +186,6 @@ class Gauge(object):
 
         self.x_4_quadrant_limit = self.x0 + self.r 
         self.y_4_quadrant_limit = self.y0 + 6 
-        self.findAngle()
 ####################################################################################             
     def findAngle(self): 
         if self.x_arrow >= self.x_2_quadrant_limit and self.y_arrow >= self.y_2_quadrant_limit and self.x_arrow <= self.x_1_quadrant_limit and self.y_arrow <= self.y_1_quadrant_limit:
@@ -222,3 +243,8 @@ class Gauge(object):
             continuous_threading.shutdown(0)
             self.capture.release() 
 #####################################################################################        
+
+if __name__ == '__main__':
+    event = threading.Event()
+    gg = Gauge(event)
+    
