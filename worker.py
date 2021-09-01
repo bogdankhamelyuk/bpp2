@@ -13,7 +13,6 @@ import time
 from queue import Queue
 import continuous_threading
 
-matplotlib.use("TkAgg")
 
 class Gauge(object): 
 
@@ -56,7 +55,7 @@ class Gauge(object):
         self.houghlines_threshold = 25
         
         self.pressure = 0.
-        self.img = self.masked_image = self.gray_img = None
+        self.frame = self.img = self.masked_image = self.gray_img = None
         self.camera = 0 
         self.capture = cv2.VideoCapture(self.camera)
         self.event = event
@@ -68,40 +67,36 @@ class Gauge(object):
         
         self.time_now = self.time_past = time.time()
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        
         try: 
             self.s.connect((socket.gethostname(),10240))
             print("connected!")
         except ConnectionRefusedError:
             print("cannot connect to server")
+        
 ####################################################################################    
     #The following method allows to capture frames from available camera device.
     def update(self):
         while True:
             if self.capture.isOpened():
-                ret, frame = self.capture.read()
+                ret, self.frame = self.capture.read()
                 if ret:
-                    # Return a boolean success flag and the current frame converted to BGR
-                    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                    frame_copy = frame
-                    self.img = frame 
-                    self.start()
-                    return (ret, frame_copy)
+                    self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
+                    self.frame_copy = self.frame
+                    self.img = self.frame 
+                    return True
                 else:
-                    return (ret, None,None)
+                    return False
             else:
-                return (None, None,None)
-####################################################################################
-    def snapshot(self):
-        self.img = self.capture.read()[1]
-        #cv2.imshow("snapshot orig",self.img)
-        self.start()                
+                return False
+              
 ####################################################################################
     def start(self):
         self.makeBlur()   
- ###################################################################################
+####################################################################################
     def makeBlur(self):
         try:
-            self.blur = cv2.blur(self.img,(5,5))
+            self.blur = cv2.blur(self.img,(3,3))
             self.makeGray() # in case of succeeded blurring call makeGray method
         except Exception:
             print("caught an exceptpon in make blur")
@@ -109,11 +104,11 @@ class Gauge(object):
 ####################################################################################
     def makeGray(self):
         try:
-            self.gray_img = cv2.cvtColor(self.blur,cv2.COLOR_BGR2GRAY)
+            self.gray_img = cv2.cvtColor(self.blur,cv2.COLOR_RGB2GRAY)
             self.findCircle() 
         except Exception:
             print("caught an exception in make gray")
-            self.start()
+            pass
 #####################################################################################            
     def findCircle(self):
         circles = cv2.HoughCircles(self.gray_img,cv2.HOUGH_GRADIENT_ALT,dp=1.5,minDist=5,param1=300,param2=0.9,minRadius=0, maxRadius=1200)
@@ -206,7 +201,8 @@ class Gauge(object):
             self.current_time = self.now.strftime("%H:%M:%S")
             self.sendData()
             print("pressure:",round(self.pressure,1),"+- 0.1 bar")
-        self.event.set() # set event to trigger callback for text output in gui_active.py    
+        # set event to trigger callback for text output in gui_active.py    
+        
         return round(self.pressure,1)
 ####################################################################################
     def sendData(self):
