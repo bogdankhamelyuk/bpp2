@@ -16,12 +16,10 @@ class KivyCamera(Image):
         
     
         Clock.schedule_interval(self.result, 1.0 / fps)
-        
-
+    
     def result(self, dt):
-        
         if self.gauge.update() is True:
-            self.gauge.makeBlur() 
+            #self.gauge.makeBlur() # commenting this out program will not be able to make image gray 
             buf1 = cv2.flip(self.gauge.img, 0)
             buf = buf1.tostring()
             image_texture = Texture.create(
