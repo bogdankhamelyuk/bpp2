@@ -25,12 +25,8 @@ class KivyCamera(Image):
             image_texture = Texture.create(
                 size=(self.gauge.img.shape[1], self.gauge.img.shape[0]), colorfmt='rgb')
             image_texture.blit_buffer(buf, colorfmt='rgb', bufferfmt='ubyte')
-            # display image from the texture
-            
+            # display image from the texture            
             self.texture = image_texture
-
-    #def Start(self):
-    #    self.gauge.start()        
 
 class CamApp(App):
     def build(self):       
