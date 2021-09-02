@@ -27,9 +27,6 @@ class KivyCamera(Image):
             # display image from the texture            
             self.texture = image_texture
 
-        
-
-
 class CamApp(App):
     def build(self):       
         self.pressure = KivyCamera(fps=20)
