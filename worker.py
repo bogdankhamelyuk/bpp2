@@ -26,7 +26,7 @@ class Gauge(object):
         self.y_arrow = 0
         self.pressure = 0.
         self.frame = self.img = self.masked_image = self.gray_img = None
-        self.capture = cv2.VideoCapture(2)
+        self.capture = cv2.VideoCapture(0)
         
         self.x_1_quadrant_limit = 0
         self.y_1_quadrant_limit = 0

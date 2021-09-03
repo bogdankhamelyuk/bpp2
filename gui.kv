@@ -1,0 +1,72 @@
+<Screen>
+    GridLayout:
+        rows: 3 
+        size: root.width, root.height
+        ActionBar:
+            pos_hint: {'top':1}
+            
+                
+        GridLayout:
+            
+            id: childlayout
+            cols:2 
+            Image:
+                #size_hint: 1, 1
+                allow_stretch: True
+                keep_ratio: True  # keep the aspect ratio so people don't look squashed
+                #pos_hint: {'center_x':0.5, 'top':0.8}
+                id: vid
+            GridLayout:
+                rows: 10
+                size_hint: .4,1
+                padding_x: 10
+                
+                padding_y: 5
+                Label:
+                  
+                    text: "First Canny Threshold"
+                Slider:
+                    orientation: "horizontal"
+                    min: 50
+                    max: 500 
+                    value: 50
+                Label: 
+                    text: "Second Canny Threshold"
+                Slider:
+                    orientation: "horizontal"
+                    min: 50
+                    max: 500 
+                    value: 50
+                Label:
+                    text: "min Line Length"
+                Slider:
+                    orientation: "horizontal"
+                    min: 0
+                    max: 100 
+                    value: 0
+                Label:
+                    text: "max Line Gap"
+                Slider:
+                    orientation: "horizontal"
+                    min: 0
+                    max: 100 
+                    value: 0
+                Label:
+                    text: "hough Lines Threshold"
+                Slider:
+                    orientation: "horizontal"
+                    min: 0
+                    max: 100 
+                    value: 0
+            Label:
+                id:pressure_output
+                size_hint: None,.1
+                
+                halign: 'left'
+                valign:'middle'
+
+
+
+                
+        
+        
