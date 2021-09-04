@@ -5,19 +5,13 @@ import math
 import socket
 import json 
 import time 
+from parameters import  Parameters
 
 class Gauge(object): 
-####################################################################################        
-    #!!!these values are going to be controlled from slice bar !!!
-    _canny_threshold1 = 350 
-    _canny_threshold2 = 175
-    #!!!these values must be controlled from slice bar
-    _minLineLength = 30
-    _maxLineGap = 18
-    _houghlines_threshold = 25
 ####################################################################################
     def __init__(self):#, q: Queue, e: Event):
         
+        self.param = Parameters()
         # variables for storing center coordinates of a circle
         self.x0 = 0 # x-coordinate of the circle's center
         self.y0 = 0 # y-coordinate of the circle's center
@@ -70,7 +64,7 @@ class Gauge(object):
                     #cv2.flip(self.img,0)
                     final_image = self.start()
                     if final_image is not None:
-                        return final_image
+                        return True
                     else:
                         self.start()
                 else:
@@ -79,7 +73,6 @@ class Gauge(object):
             else:
                 print("couldnt open camera")
                 return None
-              
 ####################################################################################
     def start(self):
         if self.makeBlur() is not False:
@@ -97,14 +90,14 @@ class Gauge(object):
                         self.findPressure()
                         return self.img 
                 else:
-                    #print("no circles")
-                    return None
+                    print("no circles")
+                    return self.frame
             else:
-                    #print("making gray failed")
-                    return None
+                    print("making gray failed")
+                    return self.img
         else:
-            #print("failed on blur")
-            return None
+            print("failed on blur")
+            return self.img
 ####################################################################################
     def makeBlur(self):
         try:
@@ -151,17 +144,20 @@ class Gauge(object):
         self.masked_image = cv2.bitwise_and(self.gray_img, self.gray_img, mask=self.masked_image) # using logical AND compare mask with image and delete everything outside the mask
 #####################################################################################        
     def CannyEdges(self):
-        self.edges = cv2.Canny(self.masked_image,self.__class__._canny_threshold1,self.__class__._canny_threshold2)      
+        #print("canny threshold1:",self.param.__class__._canny_threshold1)
+        self.edges = cv2.Canny(self.masked_image,self.param.__class__._canny_threshold1,self.param.__class__._canny_threshold2)      
 #####################################################################################        
     def drawLine(self):
-        lines = cv2.HoughLinesP(self.edges,1, np.pi/180.0, self.__class__._houghlines_threshold, self.__class__._minLineLength, self.__class__._maxLineGap)
+        lines = cv2.HoughLinesP(self.edges,1, np.pi/180.0, self.param.__class__._houghlines_threshold, self.param.__class__._minLineLength, self.param.__class__._maxLineGap)
         if lines is not None:
             #print("found the lines")
             self.x_arrow = lines[0,0,0] # 
             self.y_arrow = lines[0,0,1]
             #print("self.x_arrow: ",self.x_arrow)
             #print("self.y_arrow: ",self.y_arrow)
+            self.edges = cv2.cvtColor(self.edges,cv2.COLOR_GRAY2RGB)
             cv2.line(self.img,(self.x0,self.y0), (self.x_arrow,self.y_arrow), (0,0,255),2)
+            cv2.line(self.edges,(self.x0,self.y0), (self.x_arrow,self.y_arrow), (255,0,0),2)
             return True
         else:
             return False

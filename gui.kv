@@ -1,13 +1,55 @@
-<Screen>
+<MainScreen>
+    name: 'main_screen'
     GridLayout:
-        rows: 3 
+        rows: 3
+        size: root.width, root.height
+        
+        ActionBar:
+            pos_hint: {'top':1}
+            ActionView:
+                id: ActionView
+                HiddenIcon_ActionPrevious:
+                ActionButton:
+                    text: 'Settings'
+                    on_release: root.manager.current = 'settings_screen'
+                # todo button with screen change
+        Image:
+            #size_hint: 1, 1
+            allow_stretch: True
+            keep_ratio: True  # keep the aspect ratio so people don't look squashed
+            #pos_hint: {'center_x':0.5, 'top':0.8}
+            id: vid
+        Label:
+            
+            id:pressure_output
+            size_hint: None,.1
+            
+            halign: 'left'
+            #valign:'middle'
+
+<HiddenIcon_ActionPrevious@ActionPrevious>:
+    title: ''   # app.title if app.title is not None else 'Action Previous'
+    with_previous: False
+    app_icon: ''
+    app_icon_width: 0
+    app_icon_height: 0
+    size_hint_x: None
+    width: len(self.title) * 10
+
+<SettingsScreen>:
+    name: 'settings_screen'
+    GridLayout:
+        rows:2 
         size: root.width, root.height
         ActionBar:
             pos_hint: {'top':1}
-            
-                
+            ActionView:
+                id: ActionView
+                HiddenIcon_ActionPrevious:
+                ActionButton:
+                    text: 'Back'
+                    on_release: root.manager.current = 'main_screen'    
         GridLayout:
-            
             id: childlayout
             cols:2 
             Image:
@@ -20,53 +62,44 @@
                 rows: 10
                 size_hint: .4,1
                 padding_x: 10
-                
                 padding_y: 5
                 Label:
-                  
                     text: "First Canny Threshold"
                 Slider:
                     orientation: "horizontal"
-                    min: 50
+                    min: 10
                     max: 500 
-                    value: 50
+                    value: root.threshold1
+                    on_value: root.changeCannyThreshold1(*args)
                 Label: 
                     text: "Second Canny Threshold"
                 Slider:
                     orientation: "horizontal"
-                    min: 50
+                    min: 10
                     max: 500 
-                    value: 50
+                    value: root.threshold2
+                    on_value: root.changeCannyThreshold2(*args)
                 Label:
                     text: "min Line Length"
                 Slider:
                     orientation: "horizontal"
                     min: 0
                     max: 100 
-                    value: 0
+                    value: root.minLineLength
+                    on_value: root.changeMinLineLength(*args)
                 Label:
                     text: "max Line Gap"
                 Slider:
                     orientation: "horizontal"
                     min: 0
                     max: 100 
-                    value: 0
+                    value: root.maxLineGap
+                    on_value: root.changeMaxLineGap(*args)
                 Label:
                     text: "hough Lines Threshold"
                 Slider:
                     orientation: "horizontal"
                     min: 0
                     max: 100 
-                    value: 0
-            Label:
-                id:pressure_output
-                size_hint: None,.1
-                
-                halign: 'left'
-                valign:'middle'
-
-
-
-                
-        
-        
+                    value: root.houghlines_threshold
+                    on_value:root.changeHoughLinesThreshold(*args)
