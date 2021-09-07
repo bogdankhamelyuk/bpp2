@@ -12,6 +12,9 @@
                 ActionButton:
                     text: 'Settings'
                     on_release: root.manager.current = 'settings_screen'
+                ActionButton:
+                    text: 'Change Camera'
+                    on_release:root.changeCamera()
                 # todo button with screen change
         Image:
             #size_hint: 1, 1
@@ -59,7 +62,7 @@
                 #pos_hint: {'center_x':0.5, 'top':0.8}
                 id: vid
             GridLayout:
-                rows: 10
+                rows: 11
                 size_hint: .4,1
                 padding_x: 10
                 padding_y: 5
@@ -68,7 +71,7 @@
                 Slider:
                     orientation: "horizontal"
                     min: 10
-                    max: 500 
+                    max: 700
                     value: root.threshold1
                     on_value: root.changeCannyThreshold1(*args)
                 Label: 
@@ -76,7 +79,7 @@
                 Slider:
                     orientation: "horizontal"
                     min: 10
-                    max: 500 
+                    max: 700 
                     value: root.threshold2
                     on_value: root.changeCannyThreshold2(*args)
                 Label:
@@ -103,3 +106,7 @@
                     max: 100 
                     value: root.houghlines_threshold
                     on_value:root.changeHoughLinesThreshold(*args)
+                Button:
+                    text:"Save changes"
+                    on_press: root.updateJson()
+                    

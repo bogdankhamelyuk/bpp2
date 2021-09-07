@@ -6,11 +6,13 @@ import socket
 import json 
 import time 
 from parameters import  Parameters
+import threading  
+
 
 class Gauge(object): 
 ####################################################################################
     def __init__(self):#, q: Queue, e: Event):
-        
+        cv2.useOptimized()
         self.param = Parameters()
         # variables for storing center coordinates of a circle
         self.x0 = 0 # x-coordinate of the circle's center
@@ -19,9 +21,11 @@ class Gauge(object):
         self.x_arrow = 0
         self.y_arrow = 0
         self.pressure = 0.
-        self.frame = self.img = self.masked_image = self.gray_img = None
-        self.capture = cv2.VideoCapture(0)
         
+        self.frame = self.img = self.masked_image = self.gray_img = None
+        self.capture = cv2.VideoCapture(self.param.__class__._camera)
+        self.fps = 30
+        self.period = 1 / self.fps
         self.x_1_quadrant_limit = 0
         self.y_1_quadrant_limit = 0
         self.x_2_quadrant_limit = 0
@@ -49,24 +53,31 @@ class Gauge(object):
             print("connected!")
         except ConnectionRefusedError:
             print("cannot connect to server")
+        video_thread = threading.Thread(target=self.update,args=[])
+        video_thread.start()
         
-        self.update()
 ####################################################################################    
     #The following method allows to capture frames from available camera device.
     def update(self):
+        
         while True:
             if self.capture.isOpened():
                 ret, self.frame = self.capture.read()
-                if ret:
-                    self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
-                    self.frame_copy = self.frame
-                    self.img = cv2.flip(self.frame,1) 
-                    #cv2.flip(self.img,0)
-                    final_image = self.start()
-                    if final_image is not None:
-                        return True
-                    else:
-                        self.start()
+                if ret is not None:
+                    try:
+                        self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
+                        self.frame_copy = self.frame
+                        self.img = cv2.flip(self.frame,0) 
+                        #self.img = self.frame
+                        #cv2.flip(self.img,0)
+                        final_image = self.start()
+                        if final_image is not None:
+                            return final_image
+                        else:
+                            self.start()
+                    except:
+                        print("caught exception in def update()")
+                        return self.frame
                 else:
                     print("no status ")
                     return None
@@ -82,13 +93,20 @@ class Gauge(object):
                 if self.findCircle() is not False:
                     self.drawCircle()
                     self.cutBackground()
-                    self.CannyEdges() 
+                    if self.CannyEdges() is not False: 
                     #print("found canny")
-                    if self.drawLine() is not False:
-                        self.findQuadrants()
-                        self.findAngle()
-                        self.findPressure()
-                        return self.img 
+                        if self.drawLine() is not False:
+                            self.findQuadrants()
+                            self.findAngle()
+                            self.findPressure()
+                            self.sendData()
+                            return self.img
+                        else:
+                            print("failed on lines")
+                            return self.img 
+                    else:
+                        print("failed on edges")
+                        return self.frame
                 else:
                     print("no circles")
                     return self.frame
@@ -101,7 +119,7 @@ class Gauge(object):
 ####################################################################################
     def makeBlur(self):
         try:
-            self.blur = cv2.blur(self.img,(3,3))
+            self.blur = cv2.blur(self.img,(5,5))
             return True
         except Exception:
             #print("caught an exceptpon in make blur")
@@ -144,20 +162,25 @@ class Gauge(object):
         self.masked_image = cv2.bitwise_and(self.gray_img, self.gray_img, mask=self.masked_image) # using logical AND compare mask with image and delete everything outside the mask
 #####################################################################################        
     def CannyEdges(self):
-        #print("canny threshold1:",self.param.__class__._canny_threshold1)
-        self.edges = cv2.Canny(self.masked_image,self.param.__class__._canny_threshold1,self.param.__class__._canny_threshold2)      
+        try:
+            self.edges = cv2.Canny(self.masked_image,self.param.__class__._canny_threshold1,self.param.__class__._canny_threshold2)
+            return True
+        except:      
+            print("no edges")
+            return False
 #####################################################################################        
     def drawLine(self):
         lines = cv2.HoughLinesP(self.edges,1, np.pi/180.0, self.param.__class__._houghlines_threshold, self.param.__class__._minLineLength, self.param.__class__._maxLineGap)
+        self.edges = cv2.cvtColor(self.edges,cv2.COLOR_GRAY2RGB)
         if lines is not None:
             #print("found the lines")
             self.x_arrow = lines[0,0,0] # 
             self.y_arrow = lines[0,0,1]
             #print("self.x_arrow: ",self.x_arrow)
             #print("self.y_arrow: ",self.y_arrow)
-            self.edges = cv2.cvtColor(self.edges,cv2.COLOR_GRAY2RGB)
-            cv2.line(self.img,(self.x0,self.y0), (self.x_arrow,self.y_arrow), (0,0,255),2)
-            cv2.line(self.edges,(self.x0,self.y0), (self.x_arrow,self.y_arrow), (255,0,0),2)
+            
+            cv2.line(self.img,(self.x0,self.y0), (self.x_arrow,self.y_arrow), (0,0,255),6)
+            cv2.line(self.edges,(self.x0,self.y0), (self.x_arrow,self.y_arrow), (255,0,0),6)
             return True
         else:
             return False
@@ -169,7 +192,7 @@ class Gauge(object):
         #print("self.x_1_quadrant_limit: ",self.x_1_quadrant_limit)
         #print("self.y_1_quadrant_limit: ",self.y_1_quadrant_limit)
         self.x_2_quadrant_limit = self.x0 - self.r 
-        self.y_2_quadrant_limit = self.y0 + 6 
+        self.y_2_quadrant_limit = self.y0 - 6 
         #print("###########################################")
         #print("self.x_2_quadrant_limit: ",self.x_2_quadrant_limit)
         #print("self.y_2_quadrant_limit: ",self.y_2_quadrant_limit)
@@ -191,11 +214,11 @@ class Gauge(object):
                 self.alpha_deg = (math.atan((self.x0-self.x_arrow)/(self.y0-self.y_arrow))*180.0/math.pi)
             else:
                 self.alpha_deg = (math.atan((self.x0-self.x_arrow)/(self.y_arrow-self.y0))*180.0/math.pi)
-        if self.x_arrow < self.x_3_quadrant_limit and self.y_arrow < self.y_3_quadrant_limit and self.x_arrow > self.x_2_quadrant_limit and self.y_arrow > self.y_2_quadrant_limit:
+        if self.x_arrow < self.x_3_quadrant_limit and self.y_arrow < self.y_3_quadrant_limit and self.x_arrow > self.x_2_quadrant_limit and self.y_arrow >=self.y_2_quadrant_limit:
             if self.x0 > self.x_arrow:
-                self.alpha_deg = ((math.pi - math.atan((self.x0-self.x_arrow)/(self.y0-self.y_arrow)))*180.0/math.pi)
-            else:
-                self.alpha_deg = ((math.pi - math.atan((self.x_arrow-self.x0)/(self.y0-self.y_arrow)))*180.0/math.pi)
+                self.alpha_deg = ((math.pi - math.atan((self.x0-self.x_arrow)/(self.y_arrow-self.y0)))*180.0/math.pi)
+            #else:
+            #    self.alpha_deg = ((math.pi - math.atan((self.x_arrow-self.x0)/(self.y0-self.y_arrow)))*180.0/math.pi)
         if self.x_arrow >= self.x_3_quadrant_limit and self.y_arrow <= self.y_3_quadrant_limit and self.x_arrow <= self.x_4_quadrant_limit and self.y_arrow >= self.y_4_quadrant_limit:
             if (self.x_3_quadrant_limit-self.x_arrow) != 0 :
                 if(self.y_4_quadrant_limit-self.y_arrow)!=0:  

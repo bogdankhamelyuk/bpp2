@@ -1,0 +1,8 @@
+{
+    "threshold1":60,
+    "threshold2":327,
+    "maxLineGap":20,
+    "minLineLength":59,
+    "houghlines_threshold":24,
+    "camera":2
+}
