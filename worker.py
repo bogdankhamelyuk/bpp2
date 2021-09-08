@@ -7,11 +7,11 @@ import json
 import time 
 from parameters import  Parameters
 import threading  
-
+from threading import Event
 
 class Gauge(object): 
 ####################################################################################
-    def __init__(self):#, q: Queue, e: Event):
+    def __init__(self,e: Event):#, q: Queue, e: Event):
         cv2.useOptimized()
         self.param = Parameters()
         # variables for storing center coordinates of a circle
@@ -21,11 +21,10 @@ class Gauge(object):
         self.x_arrow = 0
         self.y_arrow = 0
         self.pressure = 0.
-        
-        self.frame = self.img = self.masked_image = self.gray_img = None
+        self.mirrorEvent = e 
+        self.frame = self.img = self.masked_image = self.gray_img = self.frame_copy= None
         self.capture = cv2.VideoCapture(self.param.__class__._camera)
-        self.fps = 30
-        self.period = 1 / self.fps
+  
         self.x_1_quadrant_limit = 0
         self.y_1_quadrant_limit = 0
         self.x_2_quadrant_limit = 0
@@ -66,9 +65,13 @@ class Gauge(object):
                 if ret is not None:
                     try:
                         self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
-                        self.frame_copy = self.frame
-                        self.img = cv2.flip(self.frame,0) 
-                        #self.img = self.frame
+                        
+                        if self.mirrorEvent.isSet() is True:
+                            print("mirrorEvent is set")
+                            self.frame = cv2.flip(self.frame,1)#todo with event
+                        self.img = self.frame_copy = self.frame    
+
+                        #self.img = cv2.flip(self.frame_copy,1)
                         #cv2.flip(self.img,0)
                         final_image = self.start()
                         if final_image is not None:
@@ -128,6 +131,7 @@ class Gauge(object):
     def makeGray(self):
         try:
             self.gray_img = cv2.cvtColor(self.blur,cv2.COLOR_RGB2GRAY)
+
             return True
              
         except Exception:
@@ -135,7 +139,9 @@ class Gauge(object):
             return False
 #####################################################################################            
     def findCircle(self):
-        self.circles = cv2.HoughCircles(self.gray_img,cv2.HOUGH_GRADIENT_ALT,dp=1.5,minDist=5,param1=300,param2=0.9,minRadius=0, maxRadius=1200)
+        self.circles = cv2.HoughCircles(self.gray_img,cv2.HOUGH_GRADIENT_ALT,dp=1.5,minDist=self.param.__class__._minDist,
+                                        param1=self.param.__class__._param1,param2=self.param.__class__._param2,
+                                        minRadius=self.param.__class__._minRadius, maxRadius=self.param.__class__._maxRadius)
         try:
             self.circles = np.uint16(np.around(self.circles))
             #print(self.circles)
@@ -180,7 +186,9 @@ class Gauge(object):
             #print("self.y_arrow: ",self.y_arrow)
             
             cv2.line(self.img,(self.x0,self.y0), (self.x_arrow,self.y_arrow), (0,0,255),6)
+            self.edges = cv2.circle(self.edges,(self.x0,self.y0),self.r,(0,255,0),3)
             cv2.line(self.edges,(self.x0,self.y0), (self.x_arrow,self.y_arrow), (255,0,0),6)
+        
             return True
         else:
             return False

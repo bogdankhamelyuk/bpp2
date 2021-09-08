@@ -15,7 +15,9 @@
                 ActionButton:
                     text: 'Change Camera'
                     on_release:root.changeCamera()
-                # todo button with screen change
+                ActionButton:
+                    text: 'Mirror'
+                    on_release:root.mirrorCamera()
         Image:
             #size_hint: 1, 1
             allow_stretch: True
@@ -41,8 +43,9 @@
 
 <SettingsScreen>:
     name: 'settings_screen'
+    
     GridLayout:
-        rows:2 
+        rows:2
         size: root.width, root.height
         ActionBar:
             pos_hint: {'top':1}
@@ -54,7 +57,53 @@
                     on_release: root.manager.current = 'main_screen'    
         GridLayout:
             id: childlayout
-            cols:2 
+            cols:3
+            GridLayout:
+                size_hint: .4,1
+                padding_x: 10
+                padding_y: 5
+                rows: 10
+                Label:
+                    text: "minimum distance"
+                Slider:
+                    orientation: "horizontal"
+                    min: 1
+                    max: 15
+                    value: root.minDist
+                    on_value: root.changeMinDist(*args)
+                Label:
+                    text: "Upper Threshold"
+                Slider:
+                    orientation: "horizontal"
+                    min: 10
+                    max: 500
+                    value: root.param1
+                    on_value: root.changeParam1(*args)
+                Label:
+                    text: "Threshold for center detection"
+                Slider:
+                    orientation: "horizontal"
+                    min: 1
+                    max: 990
+                    step:1
+                    value: root.param2*1000
+                    on_value: root.changeParam2(*args)
+                Label:
+                    text: "Minimum Radius"
+                Slider:
+                    orientation: "horizontal"
+                    min: 0
+                    max: 100
+                    value: root.minRadius
+                    on_value: root.changeMinRadius(*args)
+                Label:
+                    text: "Maximum Radius"
+                Slider:
+                    orientation: "horizontal"
+                    min: 100
+                    max: 1200
+                    value: root.maxRadius
+                    on_value: root.changeMaxRadius(*args)
             Image:
                 #size_hint: 1, 1
                 allow_stretch: True
