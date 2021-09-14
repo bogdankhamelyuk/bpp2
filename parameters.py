@@ -5,6 +5,7 @@ class Parameters(object):
     ########################################################################       
     #!!!these values are going to be controlled from slice bar !!!
     _file = open("/home/bogdan/Vs-code-workspace/python/lndf_video/datafile.json","r")
+    _angle = .0
     if os.path.getsize("/home/bogdan/Vs-code-workspace/python/lndf_video/datafile.json") > 0:
         print("is not empty")
         jsonFile = json.load(_file)
@@ -19,7 +20,8 @@ class Parameters(object):
         _param1               = jsonFile["param1"]  
         _param2               = jsonFile["param2"]  
         _minRadius            = jsonFile["minRadius"]    
-        _maxRadius            = jsonFile["maxRadius"]        
+        _maxRadius            = jsonFile["maxRadius"]
+
     else:
         print("empty")
         _canny_threshold1 = 350 
@@ -34,4 +36,6 @@ class Parameters(object):
         _param2    = .9
         _minRadius = 0
         _maxRadius = 1200
+        
+        
     ######################################################################## 

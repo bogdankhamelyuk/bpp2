@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Digitalisierte Dampfmaschine</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Archivo+Black|Judson:400,700" rel="stylesheet">
+        <link href="//db.onlinewebfonts.com/c/c8002809ed49394a1aab4a4ceaff09a6?family=Neue+Haas+Grotesk" rel="stylesheet" type="text/css"/>
+        <style>
+            #title{
+                font-family: 'Archivo Black', serif;
+                color:  rgb(218, 156, 42);
+                font-size: 65px;
+                text-align: left;
+                padding-top: 250px;
+                padding-left: 40px;
+            }
+            #description{
+                font-family: 'Judson', serif;
+                color:  rgb(243, 240, 229);
+                font-size: 25px;
+                text-align: left;
+                padding-right: 120px;
+                padding-left: 40px;
+                padding-top: 30px;
+            }
+            #plot_button{
+                margin-left: 40px;
+                margin-top: 30px;
+            }
+            #video_button{               
+                margin-left: 650px;
+                margin-top: -90px;
+            }           
+            .btn-grad {background-image: linear-gradient(to right, #614385 0%, #384a80  51%, #51396d  100%)}
+            .btn-grad {
+                cursor: pointer;
+                border: none;
+                height:90px;
+                width: 320px;
+                font-family: "Neue Haas Grotesk"; 
+                transition: 1s;
+                background-size: 200% auto;
+                color: white;            
+                font-size:30px;
+                border-radius: 10px;
+                display: block;
+            }
+
+            .btn-grad:hover {
+               background-position: right ; /* change the direction of the change here */
+               text-decoration: none;
+            }
+            
+            html, body{
+                margin: 0;
+                height: 100%;
+                background: #667db6;  /* fallback for old browsers */
+                background: -webkit-linear-gradient(to right #025886, #025785, #475986);  /* Chrome 10-25, Safari 5.1-6 */
+                background: linear-gradient(to right,#075c8a, #036ea8e0, #2353ac); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            }
+        </style>
+    </head>
+    <body >
+        <h1 id=title>
+            Digitalisierte Dampfmaschine
+        </h1> 
+        <div id=description>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, 
+            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+        </div>
+        <script>
+            function openGraph(){
+                location.href = "/graph";
+            }
+        </script>
+        <button class="btn-grad" id="plot_button" onclick="openGraph()">
+            Plot
+        </button>
+        <button class="btn-grad" id="video_button">
+            Video
+        </button>
+ 
+    </body>
+</html> 
+
+
+

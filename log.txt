@@ -1,0 +1,98 @@
+self.alpha_deg: 47.1798490189284
+self.x0 279
+self.y0 246
+self.x_1_quadrant_limit: 279
+self.y_1_quadrant_limit: 180
+self.x_arrow: 246
+self.y_arrow: 247
+self.x_2_quadrant_limit: 213
+self.y_2_quadrant_limit: 242
+self.x_3_quadrant_limit 283
+self.y_3_quadrant_limit: 312
+self.loesung: 2
+PRESSURE ::: 1.0 +- 0.1 bar
+#################################################
+self.alpha_deg: 47.1798490189284
+self.x0 279
+self.y0 246
+self.x_1_quadrant_limit: 279
+self.y_1_quadrant_limit: 180
+self.x_arrow: 246
+self.y_arrow: 247
+self.x_2_quadrant_limit: 213
+self.y_2_quadrant_limit: 242
+self.x_3_quadrant_limit 283
+self.y_3_quadrant_limit: 312
+self.loesung: 2
+PRESSURE ::: 1.0 +- 0.1 bar
+#################################################
+self.alpha_deg: 51.55964799628541
+self.x0 279
+self.y0 246
+self.x_1_quadrant_limit: 279
+self.y_1_quadrant_limit: 180
+self.x_arrow: 251
+self.y_arrow: 249
+self.x_2_quadrant_limit: 213
+self.y_2_quadrant_limit: 242
+self.x_3_quadrant_limit 283
+self.y_3_quadrant_limit: 312
+self.loesung: 2
+PRESSURE ::: 1.1 +- 0.1 bar
+#################################################
+self.alpha_deg: 51.55964799628541
+self.x0 279
+self.y0 246
+self.x_1_quadrant_limit: 279
+self.y_1_quadrant_limit: 180
+self.x_arrow: 251
+self.y_arrow: 249
+self.x_2_quadrant_limit: 213
+self.y_2_quadrant_limit: 242
+self.x_3_quadrant_limit 283
+self.y_3_quadrant_limit: 312
+self.loesung: 2
+PRESSURE ::: 1.1 +- 0.1 bar
+#################################################
+self.alpha_deg: 38.532917310975314
+self.x0 279
+self.y0 246
+self.x_1_quadrant_limit: 279
+self.y_1_quadrant_limit: 180
+self.x_arrow: 246
+self.y_arrow: 242
+self.x_2_quadrant_limit: 213
+self.y_2_quadrant_limit: 242
+self.x_3_quadrant_limit 283
+self.y_3_quadrant_limit: 312
+self.loesung: 0
+PRESSURE ::: 0.8 +- 0.1 bar
+#################################################
+self.alpha_deg: 218.53291731097534
+self.x0 279
+self.y0 246
+self.x_1_quadrant_limit: 279
+self.y_1_quadrant_limit: 180
+self.x_arrow: 246
+self.y_arrow: 242
+self.x_2_quadrant_limit: 213
+self.y_2_quadrant_limit: 242
+self.x_3_quadrant_limit 283
+self.y_3_quadrant_limit: 312
+self.loesung: 0
+PRESSURE ::: 4.6 +- 0.1 bar
+#################################################
+############EXCEPTION!!!!#######################
+self.alpha_deg: 218.53291731097534
+self.x0 279
+self.y0 246
+self.x_1_quadrant_limit: 279
+self.y_1_quadrant_limit: 180
+self.x_arrow: 246
+self.y_arrow: 242
+self.x_2_quadrant_limit: 213
+self.y_2_quadrant_limit: 242
+self.x_3_quadrant_limit 283
+self.y_3_quadrant_limit: 312
+self.loesung: 0
+PRESSURE ::: 4.6 +- 0.1 bar
