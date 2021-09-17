@@ -1,16 +1,19 @@
-"""
-ASGI config for ldnf project.
+from django.urls import path
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.auth import AuthMiddlewareStack
+from graph_app.consumers import Consumer
 
-It exposes the ASGI callable as a module-level variable named ``application``.
+import os 
+os.environ.setdefault('DJANGO_SETTINGS_MODULE','realtime_graph.settings')
 
-For more information on this file, see
-https://docs.djangoproject.com/en/3.2/howto/deployment/asgi/
-"""
 
-import os
-
-from django.core.asgi import get_asgi_application
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ldnf.settings')
-
-application = get_asgi_application()
+application = ProtocolTypeRouter({   #3
+    'websocket' : 
+        AuthMiddlewareStack(
+            URLRouter(
+                [
+                    path('graph/upload/',Consumer.as_asgi()),#4
+                ]
+            )
+        ),
+})

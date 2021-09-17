@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-dihm##%@*a-ah(7bdycny*qbe$tn(9puivxnw&b!8+k_401ab_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'home_app',
     'graph_app',
-]
+    'channels',#1
+    ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -69,8 +70,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ldnf.wsgi.application'
-ASGI_APPLICATION = 'ldnf.asgi.application'
+#WSGI_APPLICATION = 'ldnf.wsgi.application'
+ASGI_APPLICATION = 'ldnf.asgi.application'#2
 
 
 # Database
@@ -83,6 +84,15 @@ DATABASES = {
     }
 }
 
+CHANNEL_LAYERS={
+    'default':{
+        'BACKEND' : 'channels_redis.core.RedisChannelLayer',
+        'CONFIG':{
+            'hosts':[('127.0.0.1',6379)]
+
+        }
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -108,7 +118,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'CET'
 
 USE_I18N = True
 
@@ -128,7 +138,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
   BASE_DIR /  "static",
 )
-STATIC_ROOT = normpath(join(BASE_DIR, 'assets'))
+#STATIC_ROOT = normpath(join(BASE_DIR, 'assets'))
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

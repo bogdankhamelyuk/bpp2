@@ -8,6 +8,12 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
         <link href="https://fonts.googleapis.com/css?family=Archivo+Black|Judson:400,700" rel="stylesheet">
         <link href="//db.onlinewebfonts.com/c/c8002809ed49394a1aab4a4ceaff09a6?family=Neue+Haas+Grotesk" rel="stylesheet" type="text/css"/>
+        
+        <script>
+            function connectToSocket(){
+                var socket = new WebSocket('ws://127.0.0.1:8000/graph/upload/')
+            }
+        </script>
         <style>
             #title{
                 font-family: 'Archivo Black', serif;
@@ -81,7 +87,7 @@
         <button class="btn-grad" id="plot_button" onclick="openGraph()">
             Plot
         </button>
-        <button class="btn-grad" id="video_button">
+        <button class="btn-grad" id="video_button" onclick="connectToSocket()">
             Video
         </button>
  

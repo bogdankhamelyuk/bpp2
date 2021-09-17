@@ -16,15 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from home_app import views
-import graph_app
 from django.conf.urls import include
-from django.conf.urls.static import static
-from django.conf import settings
-
+from graph_app.consumers import Consumer
 urlpatterns = [
     path('', views.home),
     path('admin/', admin.site.urls),
     path('graph/',include('graph_app.urls')),
-    #path('/upload/',include('graph_app.urls'))
-]+static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)
+    
+    #urlpatternsHTTP
+]#static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)
 
