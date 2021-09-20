@@ -7,13 +7,13 @@ var table_data = [{
     x: x_list,
     y: y_list,
     mode: 'lines+markers', 
-    marker: {color: '#EB89B5', size: 8},
+    marker: {color: '#BA8209', size: 8},
     line: {width: 4}
 }];
 var layout = {
     // title: 'Der Druckwert durch das CV-Auslesen',
     font: {size: 18},
-    plot_bgcolor: "rgb(245,245,240)",
+    
 };
 var config = {responsive: true};
 var layout = {font: {size: 18}};
