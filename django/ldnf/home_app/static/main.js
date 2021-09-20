@@ -1,36 +1,73 @@
 
 // google.charts.setOnLoadCallback(drawChart);
 var socket = new WebSocket('ws://127.0.0.1:8000/graph/upload/');
-var x_list = [[0]];
-var y_list = [[0]];
-var table_data = [{
-    x: x_list,
-    y: y_list,
-    mode: 'lines+markers', 
-    marker: {color: '#BA8209', size: 8},
-    line: {width: 4}
-}];
-var layout = {
-    // title: 'Der Druckwert durch das CV-Auslesen',
-    font: {size: 18},
+
+var options = {
+    chart: {
+      type: 'line'
+    },
+    series: [{
+        name: 'Druck [ba]'
+    }],
+    title: {
+        text: 'Druckwerte durch das CV-Auslesen des Manometers',
+        style:{
+            fontsize:'100px'
+        }
+    },
+    stroke: {
+        curve: 'smooth',
+    },
+    xaxis:{
+        title: {
+            text:"Zeit in Sekunden",
+            style: {
+                fontSize :'15'
+            }
+            
+        }
+    },
+    legend: {
+        position: 'top',
+        show: true,
+    },
+    zoom: {
+        enabled: true,
+        type: 'x',  
+        autoScaleYaxis: false,  
+        zoomedArea: {
+          fill: {
+            color: '#90CAF9',
+            opacity: 0.4
+          },
+          stroke: {
+            color: '#0D47A1',
+            opacity: 0.4,
+            width: 1
+          }
+        }
+    },
+    fill: {
+        type: 'gradient',
+        gradient: {
+          shade: 'dark',
+          type: "vertical",
+          shadeIntensity: 1,
+          gradientToColors: ['#fd3535'], // optional, if not defined - uses the shades of same color in series
+          inverseColors: true,
+          opacityFrom: 1,
+          opacityTo: 1,
+          stops: [0, 100, 100, 100],
+          colorStops: []
+        }
+      }
     
-};
-var config = {responsive: true};
-var layout = {font: {size: 18}};
-var config = {responsive: true};
-TESTER = document.getElementById('line-chart');
-Plotly.newPlot(TESTER, table_data, layout, config);
+}
 
-var i = 1
- function update_data(time,pressure){
-    var upd = {
-        x: [[time]],
-        y: [[pressure]],
-    };
-    Plotly.extendTraces(TESTER,upd,[0],i);
-    i++;   
- }
-
+var chart = new ApexCharts(document.querySelector("#line-chart"), options);
+var x_list = []
+var y_list = []
+chart.render();
 
 socket.onmessage = function(json_string){
     
@@ -40,8 +77,18 @@ socket.onmessage = function(json_string){
             type:"GET",
             url:  "http://127.0.0.1:8000/ajax/getPressure",
             success : function(response){
-                data = JSON.parse(JSON.stringify(response));
-                update_data(data.time,data.pressure);
+                response_data = JSON.parse(JSON.stringify(response));
+                x_list.push(response_data.time);
+                y_list.push(response_data.pressure);
+                chart.updateSeries([{
+                    data : y_list
+                    // data: response_data.
+                  }])
+                chart.updateOptions({
+                    xaxis: {
+                        categories: x_list 
+                    }
+                })
             }
             
         }); 
