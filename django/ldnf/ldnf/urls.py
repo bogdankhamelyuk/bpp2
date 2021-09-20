@@ -17,12 +17,15 @@ from django.contrib import admin
 from django.urls import path
 from home_app import views
 from django.conf.urls import include
-from graph_app.consumers import Consumer
+from graph_app.views import getPressure
+
 urlpatterns = [
     path('', views.home),
     path('admin/', admin.site.urls),
     path('graph/',include('graph_app.urls')),
+    path("ajax/getPressure", getPressure ),
+]
     
     #urlpatternsHTTP
-]#static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)
+#static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)
 

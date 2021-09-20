@@ -8,4 +8,5 @@ urlpatterns = [
     path('', views.graph),
     path('/',home),
     
+    
 ]
