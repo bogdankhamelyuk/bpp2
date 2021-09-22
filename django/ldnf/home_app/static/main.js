@@ -4,7 +4,22 @@ var socket = new WebSocket('ws://127.0.0.1:8000/graph/upload/');
 
 var options = {
     chart: {
-      type: 'line'
+      type: 'line',
+      height: 800 ,
+      zoom: {
+        enabled: true,
+        type: 'x',
+        resetIcon: {
+                offsetX: -10,
+                offsetY: 0,
+                fillColor: '#fff',
+                strokeColor: '#37474F'
+            },
+            selection: {
+                background: '#90CAF9',
+                border: '#0D47A1'
+            }    
+        }
     },
     series: [{
         name: 'Druck [ba]'

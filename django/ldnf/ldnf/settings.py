@@ -76,6 +76,7 @@ ASGI_APPLICATION = 'ldnf.asgi.application'#2
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+join(BASE_DIR, 'db.sqlite3')
 
 DATABASES = {
     'default': {
@@ -88,8 +89,9 @@ CHANNEL_LAYERS={
     'default':{
         'BACKEND' : 'channels_redis.core.RedisChannelLayer',
         'CONFIG':{
+            #'hosts':[('127.0.0.1',6379), ('192.168.43.223',6379)]
+            #'hosts':[('192.168.43.223',6379)]
             'hosts':[('127.0.0.1',6379)]
-
         }
     }
 }
@@ -136,7 +138,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-  BASE_DIR /  "static",
+ ("/home/bogdan/Vs-code-workspace/python/lndf_video/django/ldnf/home_app/static"),
 )
 #STATIC_ROOT = normpath(join(BASE_DIR, 'assets'))
 

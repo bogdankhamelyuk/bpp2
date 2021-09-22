@@ -11,21 +11,21 @@
         
         <script>
             function connectToSocket(){
-                var socket = new WebSocket('ws://127.0.0.1:8000/graph/upload/')
+                var socket = new WebSocket('ws://192.168.30.119:8000/graph/upload/')
             }
         </script>
         <style>
             #title{
                 font-family: 'Archivo Black', serif;
-                color:  rgb(218, 156, 42);
+                color:  rgb(26, 53, 129);
                 font-size: 65px;
                 text-align: left;
-                padding-top: 250px;
+                padding-top: 200px;
                 padding-left: 40px;
             }
             #description{
                 font-family: 'Judson', serif;
-                color:  rgb(243, 240, 229);
+                color:  rgb(1, 20, 100);
                 font-size: 25px;
                 text-align: left;
                 padding-right: 120px;
@@ -40,19 +40,20 @@
                 margin-left: 650px;
                 margin-top: -90px;
             }           
-            .btn-grad {background-image: linear-gradient(to right, #614385 0%, #384a80  51%, #51396d  100%)}
             .btn-grad {
-                cursor: pointer;
-                border: none;
-                height:90px;
-                width: 320px;
                 font-family: "Neue Haas Grotesk"; 
-                transition: 1s;
-                background-size: 200% auto;
-                color: white;            
-                font-size:30px;
-                border-radius: 10px;
-                display: block;
+                color:rgb(26, 53, 129);
+                font-size: 35px;
+                width: 360px;
+                height: 90px;
+                background-color:rgba(160, 222, 233,0.5);
+                border-width: 0px;
+                border-radius: 5px;
+                border-color: rgb(6, 199, 199);
+                cursor:pointer;
+            }
+            .btn-grad:hover{
+                background-color: rgb(215, 243, 241);
             }
 
             .btn-grad:hover {
@@ -64,8 +65,8 @@
                 margin: 0;
                 height: 100%;
                 background: #667db6;  /* fallback for old browsers */
-                background: -webkit-linear-gradient(to right #025886, #025785, #475986);  /* Chrome 10-25, Safari 5.1-6 */
-                background: linear-gradient(to right,#075c8a, #036ea8e0, #2353ac); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+                background: rgb(255, 255, 255);/*-webkit-linear-gradient(to right #025886, #025785, #475986);  Chrome 10-25, Safari 5.1-6 */
+                background: #ffffff/*linear-gradient(to right,#075c8a, #036ea8e0, #2353ac); W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
             }
         </style>
     </head>
@@ -87,10 +88,6 @@
         <button class="btn-grad" id="plot_button" onclick="openGraph()">
             Plot
         </button>
-        <button class="btn-grad" id="video_button" onclick="connectToSocket()">
-            Video
-        </button>
- 
     </body>
 </html> 
 

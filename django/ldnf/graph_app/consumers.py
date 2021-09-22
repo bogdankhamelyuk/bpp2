@@ -19,8 +19,6 @@ class Consumer(JsonWebsocketConsumer):#5
         #self.send(json.dumps({'value': 10}))
         print("''''''''''''''''CONNECTED''''''''''''''''")
         
-
-
     def websocket_receive(self, content):
         text = content["text"]
         data = json.loads(text) 

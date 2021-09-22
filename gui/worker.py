@@ -27,7 +27,7 @@ class Gauge(object):
         self.mirrorEvent = e
         self.frame = self.img = self.masked_image = self.gray_img = self.frame_copy = None
         self.capture = cv2.VideoCapture(self.param.__class__._camera)
-
+        self.first_measure = True
         self.x_1_quadrant_limit = 0
         self.y_1_quadrant_limit = 0
         self.x_2_quadrant_limit = 0
@@ -67,11 +67,11 @@ class Gauge(object):
                 ret, self.frame = self.capture.read()
                 if ret is not None:
                     #try:
-                    #self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
+                    self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
 
-                    if self.mirrorEvent.isSet() is True:
+                    #if self.mirrorEvent.isSet() is True:
                         #print("mirrorEvent is set")
-                        self.frame = cv2.flip(self.frame, 1)  # todo with event
+                    self.frame = cv2.flip(self.frame, 1)  # todo with event
                     self.img = self.frame_copy = self.frame
                     #self.img = cv2.flip(self.frame_copy,1)
                     #cv2.flip(self.img,0)
@@ -126,8 +126,8 @@ class Gauge(object):
 
     def makeBlur(self):
         try:
-            self.img = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
-            self.blur = cv2.blur(self.img, (5, 5))
+           # self.img = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
+            self.blur = cv2.blur(self.img, (3, 3))
             return True
         except Exception:
             #print("caught an exceptpon in make blur")
@@ -242,24 +242,36 @@ class Gauge(object):
     def findAngle(self):
         if self.x_arrow >= self.x_2_quadrant_limit and self.y_arrow <= self.y_2_quadrant_limit and self.x_arrow <= self.x_1_quadrant_limit and self.y_arrow >= self.y_1_quadrant_limit:
             if self.y0 > self.y_arrow:
-                self.loesung = 0
-                self.alpha_deg = (
-                    math.atan((self.x0-self.x_arrow)/(self.y0-self.y_arrow))*180.0/math.pi)
-                self.findPressure()
+                difference = self.y_arrow - self.y_2_quadrant_limit
+                if difference >= (-1)  and difference <= 2:
+                    print("hahaha lolo")
+                    self.pressure = 1.
+                    self.sendData()
+                else:             
+                    self.loesung = 0
+                    self.alpha = (
+                        math.atan((self.x0-self.x_arrow)/(self.y0-self.y_arrow))
+                    )
+                    self.alpha_deg = self.alpha*180/math.pi
+                    self.findPressure()
             else:
                 self.loesung = 1
                 self.alpha_deg = 90
                 self.findPressure()
         if self.x_arrow < self.x_3_quadrant_limit and self.y_arrow < self.y_3_quadrant_limit and self.x_arrow > self.x_2_quadrant_limit and self.y_arrow >= self.y_2_quadrant_limit:
-            if self.y0 < self.y_arrow:
-                self.loesung = 2
-                self.alpha_deg = (
-                    (math.pi - math.atan((self.x0-self.x_arrow)/(self.y_arrow-self.y0)))*180.0/math.pi)
-                self.findPressure()
+            if self.y_arrow == self.y_3_quadrant_limit or self.x_3_quadrant_limit == self.x_arrow:
+                self.pressure = 3
+                self.sendData()
             else:
-                self.alpha_deg = (
-                    (math.pi - math.atan((self.x_arrow-self.x0)/(self.y0-self.y_arrow)))*180.0/math.pi)
-                self.findPressure()
+                if self.y0 < self.y_arrow:
+                    self.loesung = 2
+                    self.alpha_deg = (
+                        (math.pi - math.atan((self.x0-self.x_arrow)/(self.y_arrow-self.y0)))*180.0/math.pi)
+                    self.findPressure()
+                else:
+                    self.alpha_deg = (
+                        (math.pi - math.atan((self.x0-self.x_arrow)/(self.y0-self.y_arrow)))*180.0/math.pi)
+                    self.findPressure()
         if self.x_arrow >= self.x_3_quadrant_limit and self.y_arrow <= self.y_3_quadrant_limit and self.x_arrow <= self.x_4_quadrant_limit and self.y_arrow >= self.y_4_quadrant_limit:
             if (self.x_3_quadrant_limit-self.x_arrow) != 0:
                 self.loesung = 3
@@ -294,14 +306,10 @@ class Gauge(object):
         self.param.__class__._angle = self.alpha_difference
         if self.alpha_difference <= 0:  # if difference going to be negative it means automatically that arrrow is at zero pressure
             self.pressure = 0.
-            self.now = datetime.now()
-            self.current_time = self.now.strftime("%H:%M:%S")
             print("pressure is: ", self.pressure)
 
         else:
             self.pressure = self.bars_pro_degree * self.alpha_difference
-            self.now = datetime.now()
-            self.current_time = self.now.strftime("%H:%M:%S")
             self.sendData()
             print("self.alpha_deg:", self.alpha_difference)
             print("self.x0", self.x0)
@@ -341,15 +349,30 @@ class Gauge(object):
 ####################################################################################
 
     def sendData(self):
-        #while 1:
-        #if self.network_event.isSet():
-        a = {'pressure': np.round(self.pressure)}
-        b = json.dumps(a).encode('utf-8')
-        try:
-            self.ws.send(b)
-        except:
-            print("cannot connect")
-            self.connection_status = False
+        now = datetime.now()
+        self.current_time = datetime.timestamp(now)
+
+        if self.first_measure is True:
+            self.data = {'pressure': np.round(self.pressure), 'time': 0}
+            self.json_data = json.dumps(self.data).encode('utf-8')
+            self.last_time = self.first_time = self.current_time    
+            self.first_measure = False
+            try:
+                self.ws.send(self.json_data)
+            except:
+                print("cannot connect")
+        else:
+            interval = self.current_time - self.last_time  
+            if interval >= 5:
+                passed_time = self.current_time - self.first_time
+                self.data = {'pressure': np.round(self.pressure,1), 'time': passed_time}
+                self.json_data = json.dumps(self.data).encode('utf-8')
+                self.last_time = self.current_time
+                try:
+                    self.ws.send(self.json_data)
+                except:
+                    print("cannot connect")
+                    #self.connection_status = False
 ####################################################################################
     #Release the video source when the object is destroyed
 

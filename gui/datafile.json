@@ -1,14 +1,14 @@
 {
-    "threshold1":310,
-    "threshold2":54,
+    "threshold1":430,
+    "threshold2":441,
     "maxLineGap":20,
-    "minLineLength":18,
-    "houghlines_threshold":37,
-    "camera":0,
-    "minDist":2,
-    "param1":418,
-    "param2":0.99,
-    "minRadius":0,
+    "minLineLength":22,
+    "houghlines_threshold":30,
+    "camera":2,
+    "minDist":1,
+    "param1":242,
+    "param2":0.5,
+    "minRadius":48,
     "maxRadius":100,
-    "angle":0.0
+    "angle":-2.4666933961677557
 }

@@ -8,9 +8,9 @@
             "name": "Python: Django",
             "type": "python",
             "request": "launch",
-            "program": "/home/bogdan/Vs-code-workspace/python/lndf_video/django/ldnf/manage.py",
+            "program": "/home/bogdan/Vs-code-workspace/python/lndf_video/gui/kivy_app.py",
             "args": [
-                "runserver"
+                // "runserver"
             ],
             "django": true
         }

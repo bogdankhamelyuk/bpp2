@@ -36,27 +36,28 @@
             background-color: rgb(215, 243, 241);
         }
         #line-chart {
-            max-width: 1250px;
-            max-height: 800px;
-            padding-top: 30px;
+            padding-top:5px;
+            padding-right:50px;
             padding-left: 10px;
+            overflow-x: scroll;
+            /* max-height: 200px; */
         }
         #button-container-div {
             text-align: right;
             padding-right: 35px;   
             padding-top: 20px;
-           
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div id="button-container-div">
-        <button class="home" onclick="location.href='/' "> 
-            Zurück
-        </button>
-    </div>  
-    <div class="container-fluid">
+      
+    <div id="container-fluid">
+        <div id="button-container-div">
+            <button class="home" onclick="location.href='/' "> 
+                Zurück
+            </button>
+        </div>
         <div  id="line-chart" ></div>
     </div>
     
