@@ -61,14 +61,12 @@ class Gauge(object):
 ####################################################################################
     #The following method allows to capture frames from available camera device.
     def update(self):
-
         while True:
             if self.capture.isOpened():
                 ret, self.frame = self.capture.read()
                 if ret is not None:
                     #try:
                     self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
-
                     #if self.mirrorEvent.isSet() is True:
                         #print("mirrorEvent is set")
                     self.frame = cv2.flip(self.frame, 1)  # todo with event
