@@ -241,7 +241,7 @@ class Gauge(object):
         if self.x_arrow >= self.x_2_quadrant_limit and self.y_arrow <= self.y_2_quadrant_limit and self.x_arrow <= self.x_1_quadrant_limit and self.y_arrow >= self.y_1_quadrant_limit:
             if self.y0 > self.y_arrow:
                 difference = self.y_arrow - self.y_2_quadrant_limit
-                if difference >= (-1)  and difference <= 2:
+                if difference >= (-2) and difference <= 2:
                     self.pressure = 1.
                     self.sendData()
                 else:             
@@ -251,10 +251,7 @@ class Gauge(object):
                     )
                     self.alpha_deg = self.alpha*180/math.pi
                     self.findPressure()
-            else:
-                self.loesung = 1
-                self.alpha_deg = 90
-                self.findPressure()
+                    
         if self.x_arrow < self.x_3_quadrant_limit and self.y_arrow < self.y_3_quadrant_limit and self.x_arrow > self.x_2_quadrant_limit and self.y_arrow >= self.y_2_quadrant_limit:
             if self.y_arrow == self.y_3_quadrant_limit or self.x_3_quadrant_limit == self.x_arrow:
                 self.pressure = 3
