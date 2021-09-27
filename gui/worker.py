@@ -242,7 +242,6 @@ class Gauge(object):
             if self.y0 > self.y_arrow:
                 difference = self.y_arrow - self.y_2_quadrant_limit
                 if difference >= (-1)  and difference <= 2:
-                    print("hahaha lolo")
                     self.pressure = 1.
                     self.sendData()
                 else:             
