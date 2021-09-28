@@ -239,18 +239,18 @@ class Gauge(object):
 
     def findAngle(self):
         if self.x_arrow >= self.x_2_quadrant_limit and self.y_arrow <= self.y_2_quadrant_limit and self.x_arrow <= self.x_1_quadrant_limit and self.y_arrow >= self.y_1_quadrant_limit:
-            if self.y0 > self.y_arrow:
-                difference = self.y_arrow - self.y_2_quadrant_limit
-                if difference >= (-2) and difference <= 2:
-                    self.pressure = 1.
-                    self.sendData()
-                else:             
-                    self.loesung = 0
-                    self.alpha = (
-                        math.atan((self.x0-self.x_arrow)/(self.y0-self.y_arrow))
-                    )
-                    self.alpha_deg = self.alpha*180/math.pi
-                    self.findPressure()
+            difference = self.y_arrow - self.y_2_quadrant_limit
+            if difference >= (-2) and difference <= 2:
+                self.pressure = 1.
+                self.sendData()
+            else:             
+            
+            self.loesung = 0
+                self.alpha = (
+                    math.atan((self.x0-self.x_arrow)/(self.y0-self.y_arrow))
+                )
+                self.alpha_deg = self.alpha*180/math.pi
+                self.findPressure()
                     
         if self.x_arrow < self.x_3_quadrant_limit and self.y_arrow < self.y_3_quadrant_limit and self.x_arrow > self.x_2_quadrant_limit and self.y_arrow >= self.y_2_quadrant_limit:
             if self.y_arrow == self.y_3_quadrant_limit or self.x_3_quadrant_limit == self.x_arrow:
@@ -296,8 +296,6 @@ class Gauge(object):
 
         # find angular difference relative to angle at zero pressure
         self.alpha_difference = self.alpha_deg - self.alpha_zero_pressure
-        #print("self.alpha_difference: ",self.alpha_difference)
-        self.param.__class__._angle = self.alpha_difference
         if self.alpha_difference <= 0:  # if difference going to be negative it means automatically that arrrow is at zero pressure
             self.pressure = 0.
             print("pressure is: ", self.pressure)
@@ -378,11 +376,4 @@ class Gauge(object):
 
 
 if __name__ == '__main__':
-   # js = """
-   # const WebSocket = require('ws');
-   # var socket = new WebSocket('ws://127.0.0.1:8000/graph/upload/');
-#
-   # """
-   # 
-   # res = js2py.eval_js(js)
    pass
