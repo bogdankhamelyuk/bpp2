@@ -1,4 +1,4 @@
-# Betriebspraxisphase
+# Betriebspraxisphase 2
 Repo for Company practice phase #2 at System Industrie Electronic as a Dual Student. The repo includes kivy-app and django server. 
 
 ## Kivy App
