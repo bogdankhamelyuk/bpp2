@@ -1,5 +1,5 @@
-# bpp2
-Repo for Company practice phase #2. The repo includes kivy-app and django server. 
+# Betriebspraxisphase
+Repo for Company practice phase #2 at System Industrie Electronic as a Dual Student. The repo includes kivy-app and django server. 
 
 ## Kivy App
 Source code for kivy app is located under ```gui/kivy_app.py```. This little UI consists of two slides: main and settings. 
@@ -25,3 +25,12 @@ So the position of the arrow with respect to quadrant must be determined first a
 Basically there were following formulae calculated:
 <img width="700" alt="image" src="https://user-images.githubusercontent.com/71139952/181789761-a3bd005c-003e-4955-8001-2462c8fc0598.png">
 
+
+## Django Backend
+
+Django backend was used for transmitting the data on screens within the local network. For the real time data django server was set to be ASGI type. Data was stored using redis. The end result is represented as following:
+![ezgif-5-27110f55b9](https://user-images.githubusercontent.com/71139952/181797282-2d81323d-c4b1-465a-b7b9-c321096b6422.gif)
+
+# Personal thoughts
+
+This project was for me completely new area. Although I didn't have any previous experience with Python, Django and Computer Vision with the help of God I could implement not only recogniton of the manometer, but also small user interface and played with web programming. Nevertheless the project doesn't pretend to be professional, since the recogniton suffers from external parameters, such as light, contrast and so on. The possible solution could be CNNs, which are also complicated, but more reliable, than solely geometrical recogniton patterns.
